@@ -5,222 +5,379 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MayaLogic - Voice Assistant for Contractors</title>
     <meta name="description" content="Hands-free voice assistant for plumbers, electricians, HVAC techs. Create invoices, get calculations, lookup prices - all by voice.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'wave': 'wave 1s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        wave: {
+                            '0%, 100%': { transform: 'scaleY(1)' },
+                            '50%': { transform: 'scaleY(0.5)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #10b981;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light: #f8fafc;
-            --white: #ffffff;
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 8s ease infinite;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; color: var(--dark); background: var(--white); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        nav { padding: 20px 0; position: fixed; top: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
-        .logo span { color: var(--dark); }
-        .nav-links { display: flex; gap: 32px; list-style: none; }
-        .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--primary); }
-        .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-size: 1rem; }
-        .btn-primary { background: var(--primary); color: var(--white); }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
-        .btn-outline:hover { background: var(--primary); color: var(--white); }
-        .hero { padding: 160px 0 100px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
-        .hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .hero-content h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 24px; }
-        .hero-content h1 span { color: var(--primary); }
-        .hero-content p { font-size: 1.25rem; color: var(--gray); margin-bottom: 32px; max-width: 500px; }
-        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-        .hero-card { background: var(--white); border-radius: 16px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
-        .voice-indicator { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-        .voice-wave { display: flex; gap: 3px; align-items: center; }
-        .voice-wave span { width: 4px; background: var(--primary); border-radius: 2px; animation: wave 1s ease-in-out infinite; }
-        .voice-wave span:nth-child(1) { height: 12px; animation-delay: 0s; }
-        .voice-wave span:nth-child(2) { height: 20px; animation-delay: 0.1s; }
-        .voice-wave span:nth-child(3) { height: 28px; animation-delay: 0.2s; }
-        .voice-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
-        .voice-wave span:nth-child(5) { height: 12px; animation-delay: 0.4s; }
-        @keyframes wave { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
-        .transcript { font-size: 1.1rem; color: var(--dark); padding: 16px; background: var(--light); border-radius: 8px; margin-bottom: 16px; }
-        .transcript::before { content: '"'; color: var(--primary); font-size: 1.5rem; }
-        .transcript::after { content: '"'; color: var(--primary); font-size: 1.5rem; }
-        .response { padding: 16px; background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%); border-radius: 8px; font-size: 0.95rem; }
-        .response-label { font-size: 0.75rem; font-weight: 600; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; }
-        .features { padding: 100px 0; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-size: 2.5rem; margin-bottom: 16px; }
-        .section-header p { color: var(--gray); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-        .feature-card { padding: 32px; border-radius: 12px; background: var(--light); transition: transform 0.2s, box-shadow 0.2s; }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-        .feature-icon { width: 56px; height: 56px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.5rem; }
-        .feature-card h3 { font-size: 1.25rem; margin-bottom: 12px; }
-        .feature-card p { color: var(--gray); font-size: 0.95rem; }
-        .trades { padding: 100px 0; background: var(--dark); color: var(--white); }
-        .trades .section-header h2 { color: var(--white); }
-        .trades .section-header p { color: rgba(255,255,255,0.7); }
-        .trades-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
-        .trade-item { text-align: center; padding: 24px; background: rgba(255,255,255,0.05); border-radius: 12px; transition: background 0.2s; }
-        .trade-item:hover { background: rgba(255,255,255,0.1); }
-        .trade-icon { font-size: 2.5rem; margin-bottom: 12px; }
-        .trade-item h4 { font-size: 1rem; font-weight: 500; }
-        .how-it-works { padding: 100px 0; }
-        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
-        .step { text-align: center; }
-        .step-number { width: 48px; height: 48px; background: var(--primary); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin: 0 auto 20px; }
-        .step h3 { margin-bottom: 8px; }
-        .step p { color: var(--gray); font-size: 0.95rem; }
-        .cta { padding: 100px 0; background: var(--primary); color: var(--white); text-align: center; }
-        .cta h2 { font-size: 2.5rem; margin-bottom: 16px; }
-        .cta p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
-        .cta .btn-primary { background: var(--white); color: var(--primary); }
-        .cta .btn-primary:hover { background: var(--light); }
-        footer { padding: 40px 0; background: var(--dark); color: rgba(255,255,255,0.7); text-align: center; }
-        @media (max-width: 1024px) {
-            .hero .container { grid-template-columns: 1fr; }
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .trades-grid { grid-template-columns: repeat(3, 1fr); }
-            .steps { grid-template-columns: repeat(2, 1fr); }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
-        @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.5rem; }
-            .nav-links { display: none; }
-            .features-grid, .steps { grid-template-columns: 1fr; }
-            .trades-grid { grid-template-columns: repeat(2, 1fr); }
-            .section-header h2 { font-size: 2rem; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #fce7f3 100%);
         }
+        .wave-bar { animation: wave 1s ease-in-out infinite; }
+        .wave-bar:nth-child(1) { animation-delay: 0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
     </style>
 </head>
-<body>
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">Maya<span>Logic</span></a>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#trades">Trades</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-            </ul>
-            <a href="#cta" class="btn btn-primary">Get Started</a>
+<body class="antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="text-2xl font-bold">
+                    <span class="text-blue-600">Maya</span><span class="text-gray-900">Logic</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#features" class="text-gray-600 hover:text-blue-600 transition-colors font-medium">Features</a>
+                    <a href="#trades" class="text-gray-600 hover:text-blue-600 transition-colors font-medium">Trades</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition-colors font-medium">How It Works</a>
+                    <a href="#privacy" class="text-gray-600 hover:text-blue-600 transition-colors font-medium">Privacy</a>
+                </div>
+                <a href="#cta" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5">
+                    Get Started
+                </a>
+            </div>
         </div>
     </nav>
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Your Voice-Powered <span>Field Assistant</span></h1>
-                <p>Create invoices, get trade calculations, and look up prices - all hands-free while you work. Built for plumbers, electricians, HVAC techs, and contractors.</p>
-                <div class="hero-buttons">
-                    <a href="#cta" class="btn btn-primary">Start Free Trial</a>
-                    <a href="#how-it-works" class="btn btn-outline">See How It Works</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="hero-card">
-                    <div class="voice-indicator">
-                        <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div>
-                        <span style="color: var(--gray); font-size: 0.9rem;">Listening...</span>
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-screen pt-32 pb-20 overflow-hidden relative">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1.5s;"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left: Content -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-gray-600 mb-6">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        Now with bilingual support
                     </div>
-                    <div class="transcript">Start an invoice for ABC Plumbing, service call at 123 Main Street</div>
-                    <div class="response">
-                        <div class="response-label">Maya responds</div>
-                        Got it! Invoice started for ABC Plumbing at 123 Main Street. What would you like to add first - labor or materials?
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
+                        Your Voice-Powered
+                        <span class="gradient-text block">Field Assistant</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0">
+                        Create invoices, get trade calculations, and look up prices — all hands-free while you work. Built for contractors who get things done.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#cta" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all hover:shadow-xl hover:shadow-blue-500/25 hover:-translate-y-1 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Start Free Trial
+                        </a>
+                        <a href="#how-it-works" class="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-full font-semibold text-lg transition-all border border-gray-200 hover:shadow-lg flex items-center justify-center gap-2">
+                            See How It Works
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Demo Card -->
+                <div class="relative animate-float">
+                    <div class="bg-white rounded-3xl shadow-2xl shadow-gray-900/10 p-8 max-w-md mx-auto">
+                        <!-- Voice indicator -->
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="flex items-center gap-1 h-8">
+                                <div class="wave-bar w-1 bg-blue-500 rounded-full h-3"></div>
+                                <div class="wave-bar w-1 bg-blue-500 rounded-full h-5"></div>
+                                <div class="wave-bar w-1 bg-blue-500 rounded-full h-7"></div>
+                                <div class="wave-bar w-1 bg-blue-500 rounded-full h-5"></div>
+                                <div class="wave-bar w-1 bg-blue-500 rounded-full h-3"></div>
+                            </div>
+                            <span class="text-gray-500 text-sm font-medium">Listening...</span>
+                        </div>
+
+                        <!-- User input -->
+                        <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+                            <p class="text-gray-800">
+                                <span class="text-blue-500 text-xl">"</span>
+                                Start an invoice for ABC Plumbing, service call at 123 Main Street
+                                <span class="text-blue-500 text-xl">"</span>
+                            </p>
+                        </div>
+
+                        <!-- Maya response -->
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">M</span>
+                                </div>
+                                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">Maya responds</span>
+                            </div>
+                            <p class="text-gray-700">
+                                Got it! Invoice started for ABC Plumbing at 123 Main Street. What would you like to add first — labor or materials?
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Floating badges -->
+                    <div class="absolute -top-4 -left-4 bg-white rounded-2xl shadow-lg px-4 py-2 flex items-center gap-2">
+                        <span class="text-2xl">🔧</span>
+                        <span class="text-sm font-semibold">Plumbing</span>
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-lg px-4 py-2 flex items-center gap-2">
+                        <span class="text-2xl">⚡</span>
+                        <span class="text-sm font-semibold">Electrical</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Everything You Need in the Field</h2>
-                <p>Stop fumbling with your phone. Maya handles the paperwork while you focus on the job.</p>
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">Everything You Need in the Field</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Stop fumbling with your phone. Maya handles the paperwork while you focus on the job.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">&#128203;</div>
-                    <h3>Voice Invoicing</h3>
-                    <p>Create complete invoices by voice. Add labor, materials, fees - just speak naturally.</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature cards -->
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-blue-100 group-hover:bg-blue-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">📋</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Voice Invoicing</h3>
+                    <p class="text-gray-600">Create complete invoices by voice. Add labor, materials, fees — just speak naturally and Maya captures it all.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128295;</div>
-                    <h3>Trade Calculations</h3>
-                    <p>Pipe sizing from DFU, wire gauge from amps, unit conversions. Get instant answers.</p>
+
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-orange-100 group-hover:bg-orange-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">🔧</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Trade Calculations</h3>
+                    <p class="text-gray-600">Pipe sizing from DFU, wire gauge from amps, unit conversions. Get instant answers without looking it up.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128176;</div>
-                    <h3>Price Lookups</h3>
-                    <p>Real-time pricing from Home Depot and Lowe's. Know your material costs before you quote.</p>
+
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-green-100 group-hover:bg-green-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">💰</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Price Lookups</h3>
+                    <p class="text-gray-600">Real-time pricing from Home Depot and Lowe's. Know your material costs before you quote.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128221;</div>
-                    <h3>Job Estimates</h3>
-                    <p>Create professional quotes on the spot. Convert to invoices when the job is done.</p>
+
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-purple-100 group-hover:bg-purple-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">📝</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Job Estimates</h3>
+                    <p class="text-gray-600">Create professional quotes on the spot. Convert to invoices when the job is done.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#9201;</div>
-                    <h3>Job Timers</h3>
-                    <p>Track time automatically. Voice memos for notes. Everything logged for billing.</p>
+
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-red-100 group-hover:bg-red-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">⏱</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Job Timers</h3>
+                    <p class="text-gray-600">Track time automatically. Voice memos for notes. Everything logged for billing.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#127760;</div>
-                    <h3>Bilingual Support</h3>
-                    <p>Full English and Spanish support with automatic language detection.</p>
+
+                <div class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-teal-100 group-hover:bg-teal-500 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">🌎</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Bilingual Support</h3>
+                    <p class="text-gray-600">Full English and Spanish support with automatic language detection. Habla naturalmente.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="trades" id="trades">
-        <div class="container">
-            <div class="section-header">
-                <h2>Built for Field Service Pros</h2>
-                <p>Trade-specific knowledge for the work you do every day.</p>
+    <!-- Trades Section -->
+    <section id="trades" class="py-24 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">Built for Field Service Pros</h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">Trade-specific knowledge for the work you do every day.</p>
             </div>
-            <div class="trades-grid">
-                <div class="trade-item"><div class="trade-icon">&#128167;</div><h4>Plumbers</h4></div>
-                <div class="trade-item"><div class="trade-icon">&#9889;</div><h4>Electricians</h4></div>
-                <div class="trade-item"><div class="trade-icon">&#10052;</div><h4>HVAC Techs</h4></div>
-                <div class="trade-item"><div class="trade-icon">&#128293;</div><h4>Welders</h4></div>
-                <div class="trade-item"><div class="trade-icon">&#128663;</div><h4>Mobile Mechanics</h4></div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <div class="bg-white/5 hover:bg-white/10 rounded-3xl p-8 text-center transition-all hover:scale-105 cursor-pointer">
+                    <div class="text-5xl mb-4">💧</div>
+                    <h4 class="font-semibold text-lg">Plumbers</h4>
+                </div>
+                <div class="bg-white/5 hover:bg-white/10 rounded-3xl p-8 text-center transition-all hover:scale-105 cursor-pointer">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h4 class="font-semibold text-lg">Electricians</h4>
+                </div>
+                <div class="bg-white/5 hover:bg-white/10 rounded-3xl p-8 text-center transition-all hover:scale-105 cursor-pointer">
+                    <div class="text-5xl mb-4">❄️</div>
+                    <h4 class="font-semibold text-lg">HVAC Techs</h4>
+                </div>
+                <div class="bg-white/5 hover:bg-white/10 rounded-3xl p-8 text-center transition-all hover:scale-105 cursor-pointer">
+                    <div class="text-5xl mb-4">🔥</div>
+                    <h4 class="font-semibold text-lg">Welders</h4>
+                </div>
+                <div class="bg-white/5 hover:bg-white/10 rounded-3xl p-8 text-center transition-all hover:scale-105 cursor-pointer">
+                    <div class="text-5xl mb-4">🚗</div>
+                    <h4 class="font-semibold text-lg">Mobile Mechanics</h4>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple as Speaking</h2>
-                <p>No apps to learn. No buttons to press. Just talk.</p>
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">Simple as Speaking</h2>
+                <p class="text-xl text-gray-600">No apps to learn. No buttons to press. Just talk.</p>
             </div>
-            <div class="steps">
-                <div class="step"><div class="step-number">1</div><h3>Speak</h3><p>Press the button and say what you need</p></div>
-                <div class="step"><div class="step-number">2</div><h3>Maya Listens</h3><p>Advanced speech recognition understands you</p></div>
-                <div class="step"><div class="step-number">3</div><h3>Get Results</h3><p>Instant responses spoken back to you</p></div>
-                <div class="step"><div class="step-number">4</div><h3>Stay Focused</h3><p>Keep working while Maya handles paperwork</p></div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-500/25">1</div>
+                    <h3 class="text-xl font-bold mb-2">Speak</h3>
+                    <p class="text-gray-600">Press the button and say what you need in plain language</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-500/25">2</div>
+                    <h3 class="text-xl font-bold mb-2">Maya Listens</h3>
+                    <p class="text-gray-600">Advanced speech recognition understands you, even in noisy environments</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-500/25">3</div>
+                    <h3 class="text-xl font-bold mb-2">Get Results</h3>
+                    <p class="text-gray-600">Instant responses spoken back to you, hands-free</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-500/25">4</div>
+                    <h3 class="text-xl font-bold mb-2">Stay Focused</h3>
+                    <p class="text-gray-600">Keep working while Maya handles the paperwork</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="cta" id="cta">
-        <div class="container">
-            <h2>Ready to Work Smarter?</h2>
-            <p>Join contractors who are saving hours every week on paperwork. Start your free trial today.</p>
-            <a href="mailto:hello@mayalogic.com?subject=MayaLogic%20Trial%20Request" class="btn btn-primary">Request Early Access</a>
+    <!-- Privacy Section -->
+    <section id="privacy" class="py-24 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl sm:text-5xl font-bold mb-6">Your Data Stays Yours</h2>
+                    <p class="text-xl text-gray-600 mb-12">Maya runs on your device using local AI. No cloud dependency means your business data never leaves your control.</p>
+
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🔒</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">100% Local Processing</h4>
+                                <p class="text-gray-600">All AI runs on your device. Nothing sent to the cloud.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">📴</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Works Offline</h4>
+                                <p class="text-gray-600">No internet required for core features. Perfect for job sites.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">🚀</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Lightning Fast</h4>
+                                <p class="text-gray-600">Sub-second responses. No waiting for cloud servers.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl">💸</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">No Subscription Fees</h4>
+                                <p class="text-gray-600">Local AI means no monthly cloud costs eating into your profits.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="text-[200px] text-gray-200 text-center select-none">🛡️</div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 MayaLogic. Voice-first assistant for field service contractors.</p>
+    <!-- CTA Section -->
+    <section id="cta" class="py-24 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700 text-white relative overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+            <h2 class="text-4xl sm:text-5xl font-bold mb-6">Ready to Work Smarter?</h2>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Join contractors who are saving hours every week on paperwork. Start your free trial today.</p>
+            <a href="mailto:hello@mayalogic.com?subject=MayaLogic%20Trial%20Request" class="inline-flex items-center gap-2 bg-white text-blue-600 px-10 py-5 rounded-full font-bold text-lg transition-all hover:shadow-2xl hover:shadow-white/25 hover:-translate-y-1">
+                Request Early Access
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900 text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <a href="/" class="text-2xl font-bold inline-block mb-4">
+                <span class="text-blue-400">Maya</span><span class="text-white">Logic</span>
+            </a>
+            <p class="mb-4">Voice-first assistant for field service contractors. Built in Austin, Texas.</p>
+            <p class="text-sm">&copy; 2025 MayaLogic. All rights reserved.</p>
         </div>
     </footer>
 </body>
