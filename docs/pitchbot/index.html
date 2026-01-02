@@ -248,7 +248,7 @@
         .btn-mic {
             background: var(--success);
             color: white;
-            width: 48px;
+            width: 96px;
             padding: 0;
             justify-content: center;
         }
@@ -665,24 +665,45 @@
                 micBtn.classList.remove('listening');
             };
 
-            recognition.onerror = function() {
+            recognition.onerror = function(event) {
                 isListening = false;
                 micBtn.classList.remove('listening');
+                // Show error to user
+                var errorMsg = currentLang === 'es'
+                    ? 'Error de micrófono. Verifica permisos.'
+                    : 'Microphone error. Check permissions.';
+                if (event.error === 'not-allowed') {
+                    errorMsg = currentLang === 'es'
+                        ? 'Micrófono bloqueado. Permite acceso en tu navegador.'
+                        : 'Microphone blocked. Allow access in your browser.';
+                }
+                addMessage(errorMsg, false);
             };
         }
 
         function toggleListening() {
-            if (!recognition) return;
+            if (!recognition) {
+                addMessage(currentLang === 'es'
+                    ? 'Reconocimiento de voz no disponible en este navegador.'
+                    : 'Speech recognition not available in this browser.', false);
+                return;
+            }
 
             if (isListening) {
                 recognition.stop();
                 isListening = false;
                 micBtn.classList.remove('listening');
             } else {
-                recognition.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
-                recognition.start();
-                isListening = true;
-                micBtn.classList.add('listening');
+                try {
+                    recognition.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
+                    recognition.start();
+                    isListening = true;
+                    micBtn.classList.add('listening');
+                } catch (e) {
+                    addMessage(currentLang === 'es'
+                        ? 'No se pudo iniciar el micrófono. Intenta de nuevo.'
+                        : 'Could not start microphone. Try again.', false);
+                }
             }
         }
 
