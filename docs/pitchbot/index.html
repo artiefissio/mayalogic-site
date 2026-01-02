@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PitchBot - MayaLogic Demo</title>
-    <meta name="description" content="Interactive elevator pitch demo for MayaLogic voice assistant">
+    <title>PitchBot - MayaLogic Interactive Demo</title>
+    <meta name="description" content="Interactive voice-first demo for MayaLogic assistant">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,6 +19,8 @@
             --text: #f8fafc;
             --muted: #94a3b8;
             --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -29,13 +31,13 @@
             line-height: 1.6;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
         header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
         .header-top {
             display: flex;
@@ -49,9 +51,7 @@
             font-size: 0.875rem;
             transition: color 0.2s;
         }
-        .back-link:hover {
-            color: var(--primary);
-        }
+        .back-link:hover { color: var(--primary); }
         .lang-toggle {
             background: var(--card);
             border: 1px solid var(--card-border);
@@ -67,117 +67,158 @@
             color: var(--primary);
         }
         h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .subtitle {
-            color: var(--muted);
-            font-size: 1.125rem;
-        }
+        .subtitle { color: var(--muted); font-size: 1rem; }
 
-        /* Trade Selector */
-        .trades {
+        /* Mode Tabs */
+        .mode-tabs {
             display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
+            gap: 0.5rem;
             justify-content: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
-        .trade-btn {
-            padding: 0.75rem 1.5rem;
+        .mode-tab {
+            padding: 0.6rem 1.25rem;
             border: 2px solid var(--card-border);
             background: var(--card);
             color: var(--muted);
             border-radius: 50px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
         }
-        .trade-btn:hover {
+        .mode-tab:hover {
             border-color: var(--primary);
             color: var(--primary);
         }
-        .trade-btn.active {
+        .mode-tab.active {
             background: var(--primary);
             border-color: var(--primary);
             color: white;
         }
 
-        /* Pitch Card */
-        .pitch-card {
+        /* Personalization Bar */
+        .personalization {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .personalization label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .personalization input, .personalization select {
+            background: var(--bg);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            width: 140px;
+        }
+        .personalization input:focus, .personalization select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        /* Chat Area */
+        .chat-area {
             background: var(--card);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
         }
-        .pitch-header {
+        .message {
+            margin-bottom: 1rem;
             display: flex;
-            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .message.maya { flex-direction: row; }
+        .message.user { flex-direction: row-reverse; }
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
-        .pitch-label {
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 600;
+        .maya .avatar { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+        .user .avatar { background: var(--card-border); }
+        .bubble {
+            max-width: 75%;
+            padding: 0.875rem 1.25rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
-        .word-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            border-radius: 50px;
-            font-weight: 500;
+        .maya .bubble {
+            background: var(--bg);
+            border-radius: 16px 16px 16px 4px;
         }
-        .pitch-text {
-            font-size: 1.35rem;
-            line-height: 1.9;
-            color: var(--text);
+        .user .bubble {
+            background: var(--primary);
+            color: white;
+            border-radius: 16px 16px 4px 16px;
         }
 
-        /* Follow-ups */
-        .follow-ups {
+        /* Input Area */
+        .input-area {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .text-input {
+            flex: 1;
             background: var(--card);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .follow-ups-label {
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .follow-ups-text {
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
+            color: var(--text);
+            padding: 0.875rem 1rem;
             border-radius: 12px;
             font-size: 1rem;
+            font-family: inherit;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .text-input::placeholder { color: var(--muted); }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -190,14 +231,10 @@
             background: var(--primary);
             color: white;
         }
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
+        .btn-primary:hover { background: var(--primary-dark); }
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
         .btn-secondary {
             background: var(--card);
@@ -208,23 +245,83 @@
             border-color: var(--primary);
             color: var(--primary);
         }
-        .btn svg {
-            flex-shrink: 0;
+        .btn-mic {
+            background: var(--success);
+            color: white;
+            width: 48px;
+            padding: 0;
+            justify-content: center;
         }
-
-        /* Speaking animation */
-        .speaking .btn-primary {
-            animation: pulse 1.5s ease-in-out infinite;
+        .btn-mic.listening {
+            background: var(--danger);
+            animation: pulse 1s ease-in-out infinite;
         }
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            50% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .quick-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--card-border);
+            color: var(--muted);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .quick-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Invoice Display */
+        .invoice-preview {
+            background: var(--bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .invoice-title {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .invoice-row.total {
+            border-top: 2px solid var(--primary);
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+            font-weight: 700;
+            color: var(--success);
         }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: var(--muted);
             font-size: 0.875rem;
         }
@@ -232,15 +329,15 @@
             color: var(--primary);
             text-decoration: none;
         }
-        footer a:hover {
-            text-decoration: underline;
-        }
+        footer a:hover { text-decoration: underline; }
 
         /* Mobile */
         @media (max-width: 640px) {
             h1 { font-size: 2rem; }
-            .pitch-text { font-size: 1.15rem; }
             .container { padding: 1rem; }
+            .personalization { flex-direction: column; align-items: stretch; }
+            .field-group { width: 100%; }
+            .personalization input, .personalization select { width: 100%; }
         }
     </style>
 </head>
@@ -248,192 +345,448 @@
     <div class="container">
         <header>
             <div class="header-top">
-                <a href="../" class="back-link" data-en="← Back to MayaLogic" data-es="← Volver a MayaLogic">← Back to MayaLogic</a>
-                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇺🇸 EN</button>
+                <a href="../" class="back-link" id="backLink">← Back to MayaLogic</a>
+                <button class="lang-toggle" id="langToggle">EN</button>
             </div>
             <h1>PitchBot</h1>
-            <p class="subtitle" data-en="30-Second Elevator Pitch Demo" data-es="Demo de Pitch de 30 Segundos">30-Second Elevator Pitch Demo</p>
+            <p class="subtitle" id="subtitleText">Interactive Voice Demo</p>
         </header>
 
-        <div class="trades" role="tablist">
-            <button class="trade-btn active" data-trade="general" role="tab" aria-selected="true" data-en="General" data-es="General">General</button>
-            <button class="trade-btn" data-trade="plumber" role="tab" aria-selected="false" data-en="Plumber" data-es="Plomero">Plumber</button>
-            <button class="trade-btn" data-trade="electrician" role="tab" aria-selected="false" data-en="Electrician" data-es="Electricista">Electrician</button>
-            <button class="trade-btn" data-trade="hvac" role="tab" aria-selected="false">HVAC</button>
+        <!-- Mode Tabs -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="pitch" id="tabPitch">Pitch</button>
+            <button class="mode-tab" data-mode="invoice" id="tabInvoice">Invoice Demo</button>
+            <button class="mode-tab" data-mode="qa" id="tabQA">Q&amp;A</button>
         </div>
 
-        <div class="pitch-card">
-            <div class="pitch-header">
-                <span class="pitch-label" data-en="Elevator Pitch" data-es="Pitch de Elevador">Elevator Pitch</span>
-                <span class="word-badge" id="wordBadge">67 words</span>
+        <!-- Personalization -->
+        <div class="personalization">
+            <div class="field-group">
+                <label id="labelName">Your Name</label>
+                <input type="text" id="userName" placeholder="John">
             </div>
-            <p class="pitch-text" id="pitchText"></p>
+            <div class="field-group">
+                <label id="labelBusiness">Business</label>
+                <input type="text" id="userBusiness" placeholder="ABC Plumbing">
+            </div>
+            <div class="field-group">
+                <label id="labelTrade">Trade</label>
+                <select id="userTrade">
+                    <option value="general">General</option>
+                    <option value="plumber">Plumber</option>
+                    <option value="electrician">Electrician</option>
+                    <option value="hvac">HVAC</option>
+                </select>
+            </div>
         </div>
 
-        <div class="follow-ups">
-            <div class="follow-ups-label" data-en="Suggested Follow-ups" data-es="Seguimientos Sugeridos">Suggested Follow-ups</div>
-            <div class="follow-ups-text" id="followUpsText">"Want to hear more about invoicing, pricing, or scheduling?"</div>
+        <!-- Chat Area -->
+        <div class="chat-area" id="chatArea"></div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" class="text-input" id="textInput" placeholder="Type or speak...">
+            <button class="btn btn-mic" id="micBtn" title="Voice input">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+            </button>
+            <button class="btn btn-primary" id="sendBtn">Send</button>
         </div>
 
-        <div class="controls" id="controls">
-            <button class="btn btn-primary" id="speakBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                </svg>
-                <span id="speakBtnText" data-en="Speak Pitch" data-es="Reproducir Pitch">Speak Pitch</span>
-            </button>
-            <button class="btn btn-secondary" id="stopBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="6" y="4" width="4" height="16"/>
-                    <rect x="14" y="4" width="4" height="16"/>
-                </svg>
-                <span data-en="Stop" data-es="Detener">Stop</span>
-            </button>
-        </div>
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quickActions"></div>
     </div>
 
     <footer>
-        <p><span data-en="Built with" data-es="Hecho con">Built with</span> <a href="../">MayaLogic</a> — <span data-en="Voice-first assistant for contractors" data-es="Asistente por voz para contratistas">Voice-first assistant for contractors</span></p>
+        <p id="footerText">Built with <a href="../">MayaLogic</a> — Voice-first assistant for contractors</p>
     </footer>
 
     <script>
-        // Bilingual pitch content
-        const pitches = {
+        // ============ Content Data ============
+        var content = {
             en: {
-                general: "Running a trade business means juggling estimates, invoices, and material costs. Every minute on paperwork is a minute you're not billing. MayaLogic handles it all by voice—and runs locally first, so your data stays private and costs stay low. Cloud AI kicks in only when needed. Just speak, and your hands stay on the job.",
-                plumber: "Tired of paperwork eating your evenings? Every hour on invoices is an hour you're not billing. MayaLogic handles estimates, invoices, and pricing by voice. It runs on local AI first—fast, private, no per-query fees. Cloud backup only when needed.",
-                electrician: "Losing time on NEC lookups and panel calculations? Those manual calculations slow every job. MayaLogic knows wire sizing, box fill, and code requirements—powered by local AI for instant answers. No cloud latency, no API costs. Just ask, hands-free.",
-                hvac: "Spending too long on load calculations and equipment sizing? Manual math eats into your service calls. MayaLogic handles BTU calculations, refrigerant charges, and invoicing by voice. Local AI runs first—fast and private. Cloud escalates only for complex tasks."
+                backLink: "← Back to MayaLogic",
+                subtitle: "Interactive Voice Demo",
+                tabPitch: "Pitch",
+                tabInvoice: "Invoice Demo",
+                tabQA: "Q&A",
+                labelName: "Your Name",
+                labelBusiness: "Business",
+                labelTrade: "Trade",
+                placeholder: "Type or speak...",
+                send: "Send",
+                footer: "Built with",
+                footerSuffix: "— Voice-first assistant for contractors",
+                trades: { general: "General", plumber: "Plumber", electrician: "Electrician", hvac: "HVAC" },
+                pitches: {
+                    general: "Running a trade business means juggling estimates, invoices, and material costs. Every minute on paperwork is a minute you're not billing. MayaLogic handles it all by voice—and runs locally first, so your data stays private and costs stay low.",
+                    plumber: "Tired of paperwork eating your evenings? Every hour on invoices is an hour you're not billing. MayaLogic handles estimates, invoices, and pricing by voice. It runs on local AI first—fast, private, no per-query fees.",
+                    electrician: "Losing time on NEC lookups and panel calculations? Those manual calculations slow every job. MayaLogic knows wire sizing, box fill, and code requirements—powered by local AI for instant answers.",
+                    hvac: "Spending too long on load calculations and equipment sizing? Manual math eats into your service calls. MayaLogic handles BTU calculations, refrigerant charges, and invoicing by voice."
+                },
+                greeting: "Hey {name}! I'm Maya, your voice-first business assistant. What would you like to explore today?",
+                greetingDefault: "Hey! I'm Maya, your voice-first business assistant. What would you like to explore today?",
+                invoiceIntro: "Let's create a sample invoice! Just tell me what work you did. For example: 'Replaced water heater, 3 hours labor.'",
+                qaIntro: "Ask me anything about MayaLogic! I can explain features, pricing, or how the local-first AI works.",
+                quickActions: ["Hear the pitch", "Create invoice", "What is MayaLogic?", "Pricing info", "How does local AI work?"],
+                invoiceTitle: "INVOICE",
+                invoiceNumber: "Invoice #",
+                invoiceFrom: "From:",
+                invoiceTo: "To: Customer",
+                invoiceItem: "Item",
+                invoiceQty: "Qty",
+                invoicePrice: "Price",
+                invoiceTotal: "Total",
+                responses: {
+                    pitch: "Here's why {business} needs MayaLogic: {pitch} Want me to speak this out loud?",
+                    whatIs: "MayaLogic is a voice-first AI assistant built for contractors. You can create invoices, look up code requirements, calculate materials—all hands-free. It runs on local AI first, so it's fast and private.",
+                    pricing: "MayaLogic uses a local-first approach. Most queries run on your device for free. Cloud AI is only used for complex tasks, keeping costs low. No monthly per-seat fees.",
+                    localAI: "Local AI means the AI runs directly on your device. It's faster (no internet delay), private (data never leaves your device), and cheaper (no API costs). Cloud AI is a backup for complex queries.",
+                    invoice: "I've created a sample invoice for you! In the real app, you'd say this naturally: 'Create invoice for Johnson, replaced water heater, 4 hours.' Maya handles the rest.",
+                    default: "I can help you with pitches, invoices, or answer questions about MayaLogic. Try saying 'create an invoice' or 'what is MayaLogic?'"
+                }
             },
             es: {
-                general: "Manejar un negocio de oficios significa hacer malabares con cotizaciones, facturas y costos de materiales. Cada minuto en papeleo es un minuto que no estás cobrando. MayaLogic maneja todo por voz—y corre localmente primero, así tus datos quedan privados y los costos bajos. La IA en la nube solo entra cuando es necesario. Solo habla, y tus manos siguen en el trabajo.",
-                plumber: "¿Cansado del papeleo comiéndose tus noches? Cada hora en facturas es una hora que no estás cobrando. MayaLogic maneja cotizaciones, facturas y precios por voz. Corre en IA local primero—rápido, privado, sin cargos por consulta. Respaldo en la nube solo cuando es necesario.",
-                electrician: "¿Perdiendo tiempo en búsquedas de NEC y cálculos de panel? Esos cálculos manuales atrasan cada trabajo. MayaLogic sabe calibre de cable, llenado de caja y requisitos de código—impulsado por IA local para respuestas instantáneas. Sin latencia de nube, sin costos de API. Solo pregunta, manos libres.",
-                hvac: "¿Pasando mucho tiempo en cálculos de carga y dimensionamiento de equipo? Las matemáticas manuales se comen tus llamadas de servicio. MayaLogic maneja cálculos de BTU, cargas de refrigerante y facturación por voz. La IA local corre primero—rápida y privada. La nube escala solo para tareas complejas."
+                backLink: "← Volver a MayaLogic",
+                subtitle: "Demo Interactiva por Voz",
+                tabPitch: "Pitch",
+                tabInvoice: "Demo Factura",
+                tabQA: "Preguntas",
+                labelName: "Tu Nombre",
+                labelBusiness: "Negocio",
+                labelTrade: "Oficio",
+                placeholder: "Escribe o habla...",
+                send: "Enviar",
+                footer: "Hecho con",
+                footerSuffix: "— Asistente por voz para contratistas",
+                trades: { general: "General", plumber: "Plomero", electrician: "Electricista", hvac: "HVAC" },
+                pitches: {
+                    general: "Manejar un negocio de oficios significa hacer malabares con cotizaciones, facturas y costos. Cada minuto en papeleo es un minuto que no cobras. MayaLogic maneja todo por voz—y corre localmente primero, así tus datos quedan privados.",
+                    plumber: "¿Cansado del papeleo comiéndose tus noches? Cada hora en facturas es una hora sin cobrar. MayaLogic maneja cotizaciones, facturas y precios por voz. Corre en IA local—rápido, privado, sin cargos.",
+                    electrician: "¿Perdiendo tiempo en búsquedas de NEC y cálculos? Esos cálculos manuales atrasan cada trabajo. MayaLogic sabe calibre de cable y requisitos de código—impulsado por IA local.",
+                    hvac: "¿Pasando mucho tiempo en cálculos de carga? Las matemáticas manuales se comen tus llamadas de servicio. MayaLogic maneja cálculos de BTU y facturación por voz."
+                },
+                greeting: "¡Hola {name}! Soy Maya, tu asistente de negocios por voz. ¿Qué te gustaría explorar hoy?",
+                greetingDefault: "¡Hola! Soy Maya, tu asistente de negocios por voz. ¿Qué te gustaría explorar hoy?",
+                invoiceIntro: "¡Vamos a crear una factura de ejemplo! Solo dime qué trabajo hiciste. Por ejemplo: 'Reemplacé calentador de agua, 3 horas de mano de obra.'",
+                qaIntro: "¡Pregúntame lo que quieras sobre MayaLogic! Puedo explicar funciones, precios, o cómo funciona la IA local.",
+                quickActions: ["Escuchar el pitch", "Crear factura", "¿Qué es MayaLogic?", "Info de precios", "¿Cómo funciona IA local?"],
+                invoiceTitle: "FACTURA",
+                invoiceNumber: "Factura #",
+                invoiceFrom: "De:",
+                invoiceTo: "Para: Cliente",
+                invoiceItem: "Concepto",
+                invoiceQty: "Cant",
+                invoicePrice: "Precio",
+                invoiceTotal: "Total",
+                responses: {
+                    pitch: "Aquí está por qué {business} necesita MayaLogic: {pitch} ¿Quieres que lo diga en voz alta?",
+                    whatIs: "MayaLogic es un asistente de IA por voz para contratistas. Puedes crear facturas, buscar requisitos de código, calcular materiales—todo manos libres. Corre en IA local primero, así que es rápido y privado.",
+                    pricing: "MayaLogic usa un enfoque local-primero. La mayoría de consultas corren en tu dispositivo gratis. La IA en la nube solo se usa para tareas complejas, manteniendo costos bajos.",
+                    localAI: "IA local significa que la IA corre directamente en tu dispositivo. Es más rápida (sin delay de internet), privada (los datos nunca salen de tu dispositivo), y más barata (sin costos de API).",
+                    invoice: "¡He creado una factura de ejemplo! En la app real, dirías naturalmente: 'Crear factura para Johnson, reemplacé calentador, 4 horas.' Maya hace el resto.",
+                    default: "Puedo ayudarte con pitches, facturas, o responder preguntas sobre MayaLogic. Intenta decir 'crear factura' o '¿qué es MayaLogic?'"
+                }
             }
         };
 
-        const followUps = {
-            en: ["invoicing", "pricing", "scheduling"],
-            es: ["facturación", "precios", "programación"]
-        };
+        // ============ State ============
+        var currentLang = localStorage.getItem('mayalogic_lang') || 'en';
+        var currentMode = 'pitch';
+        var isListening = false;
+        var recognition = null;
 
-        const uiText = {
-            en: {
-                words: "words",
-                speaking: "Speaking...",
-                speakPitch: "Speak Pitch",
-                followUpPrefix: "Want to hear more about",
-                followUpOr: "or"
-            },
-            es: {
-                words: "palabras",
-                speaking: "Reproduciendo...",
-                speakPitch: "Reproducir Pitch",
-                followUpPrefix: "¿Quieres escuchar más sobre",
-                followUpOr: "o"
-            }
-        };
+        // ============ DOM Elements ============
+        var chatArea = document.getElementById('chatArea');
+        var textInput = document.getElementById('textInput');
+        var micBtn = document.getElementById('micBtn');
+        var sendBtn = document.getElementById('sendBtn');
+        var langToggle = document.getElementById('langToggle');
+        var quickActionsEl = document.getElementById('quickActions');
 
-        let currentTrade = "general";
-        let currentLang = localStorage.getItem('mayalogic_lang') || 'en';
+        // ============ Utility Functions ============
+        function $(id) { return document.getElementById(id); }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'es' : 'en';
-            localStorage.setItem('mayalogic_lang', currentLang);
-            applyLanguage();
-            updatePitch(currentTrade);
+        function createEl(tag, className, textContent) {
+            var el = document.createElement(tag);
+            if (className) el.className = className;
+            if (textContent) el.textContent = textContent;
+            return el;
         }
 
-        function applyLanguage() {
-            // Update all elements with data-en/data-es
-            document.querySelectorAll('[data-en]').forEach(function(el) {
-                el.textContent = currentLang === 'es' ? el.dataset.es : el.dataset.en;
-            });
+        function clearEl(el) {
+            while (el.firstChild) el.removeChild(el.firstChild);
+        }
 
-            // Update toggle button
-            document.getElementById('langToggle').textContent = currentLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN';
+        // ============ UI Updates ============
+        function applyLanguage() {
+            var c = content[currentLang];
+
+            $('backLink').textContent = c.backLink;
+            $('subtitleText').textContent = c.subtitle;
+            $('tabPitch').textContent = c.tabPitch;
+            $('tabInvoice').textContent = c.tabInvoice;
+            $('tabQA').textContent = c.tabQA;
+            $('labelName').textContent = c.labelName;
+            $('labelBusiness').textContent = c.labelBusiness;
+            $('labelTrade').textContent = c.labelTrade;
+            textInput.placeholder = c.placeholder;
+            sendBtn.textContent = c.send;
+            langToggle.textContent = currentLang === 'es' ? 'ES' : 'EN';
             document.documentElement.lang = currentLang;
 
-            // Update follow-ups text
-            var fu = followUps[currentLang];
-            var ui = uiText[currentLang];
-            document.getElementById('followUpsText').textContent = '"' + ui.followUpPrefix + ' ' + fu.slice(0, -1).join(', ') + ', ' + ui.followUpOr + ' ' + fu.slice(-1) + '?"';
+            // Update trade options
+            var tradeSelect = $('userTrade');
+            for (var i = 0; i < tradeSelect.options.length; i++) {
+                var opt = tradeSelect.options[i];
+                opt.textContent = c.trades[opt.value];
+            }
+
+            // Footer
+            clearEl($('footerText'));
+            $('footerText').appendChild(document.createTextNode(c.footer + ' '));
+            var link = createEl('a', null, 'MayaLogic');
+            link.href = '../';
+            $('footerText').appendChild(link);
+            $('footerText').appendChild(document.createTextNode(' ' + c.footerSuffix));
+
+            updateQuickActions();
         }
 
-        function updatePitch(trade) {
-            currentTrade = trade;
-            var pitch = pitches[currentLang][trade];
-            var words = pitch.split(/\s+/).length;
-            var ui = uiText[currentLang];
+        function updateQuickActions() {
+            var c = content[currentLang];
+            clearEl(quickActionsEl);
 
-            document.getElementById('pitchText').textContent = pitch;
-            document.getElementById('wordBadge').textContent = words + ' ' + ui.words;
-
-            // Update active button
-            document.querySelectorAll('.trade-btn').forEach(function(btn) {
-                var isActive = btn.dataset.trade === trade;
-                btn.classList.toggle('active', isActive);
-                btn.setAttribute('aria-selected', isActive);
+            c.quickActions.forEach(function(action) {
+                var btn = createEl('button', 'quick-btn', action);
+                btn.addEventListener('click', function() {
+                    handleInput(action);
+                });
+                quickActionsEl.appendChild(btn);
             });
         }
 
-        function speakPitch() {
+        function addMessage(text, isUser) {
+            var msg = createEl('div', 'message ' + (isUser ? 'user' : 'maya'));
+
+            var avatar = createEl('div', 'avatar');
+            avatar.textContent = isUser ? '👤' : '🤖';
+
+            var bubble = createEl('div', 'bubble', text);
+
+            msg.appendChild(avatar);
+            msg.appendChild(bubble);
+            chatArea.appendChild(msg);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function addInvoicePreview() {
+            var c = content[currentLang];
+            var userName = $('userName').value || 'Your Business';
+
+            var preview = createEl('div', 'invoice-preview');
+
+            // Header
+            var header = createEl('div', 'invoice-header');
+            var title = createEl('span', 'invoice-title', c.invoiceTitle);
+            var num = createEl('span', null, c.invoiceNumber + '1001');
+            header.appendChild(title);
+            header.appendChild(num);
+            preview.appendChild(header);
+
+            // From/To
+            var from = createEl('div', 'invoice-row');
+            from.appendChild(createEl('span', null, c.invoiceFrom));
+            from.appendChild(createEl('span', null, userName));
+            preview.appendChild(from);
+
+            var to = createEl('div', 'invoice-row');
+            to.appendChild(createEl('span', null, c.invoiceTo));
+            to.appendChild(createEl('span', null, ''));
+            preview.appendChild(to);
+
+            // Items
+            var items = [
+                { name: currentLang === 'es' ? 'Mano de obra (3 hrs)' : 'Labor (3 hrs)', price: '$225.00' },
+                { name: currentLang === 'es' ? 'Calentador de agua' : 'Water heater', price: '$650.00' },
+                { name: currentLang === 'es' ? 'Accesorios' : 'Fittings', price: '$45.00' }
+            ];
+
+            items.forEach(function(item) {
+                var row = createEl('div', 'invoice-row');
+                row.appendChild(createEl('span', null, item.name));
+                row.appendChild(createEl('span', null, item.price));
+                preview.appendChild(row);
+            });
+
+            // Total
+            var total = createEl('div', 'invoice-row total');
+            total.appendChild(createEl('span', null, c.invoiceTotal));
+            total.appendChild(createEl('span', null, '$920.00'));
+            preview.appendChild(total);
+
+            // Wrap in message
+            var msg = createEl('div', 'message maya');
+            var avatar = createEl('div', 'avatar');
+            avatar.textContent = '🤖';
+            var bubble = createEl('div', 'bubble');
+            bubble.appendChild(preview);
+            msg.appendChild(avatar);
+            msg.appendChild(bubble);
+            chatArea.appendChild(msg);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // ============ Speech Recognition ============
+        function initSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                micBtn.style.display = 'none';
+                return;
+            }
+
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
+
+            recognition.onresult = function(event) {
+                var transcript = event.results[0][0].transcript;
+                textInput.value = transcript;
+                handleInput(transcript);
+            };
+
+            recognition.onend = function() {
+                isListening = false;
+                micBtn.classList.remove('listening');
+            };
+
+            recognition.onerror = function() {
+                isListening = false;
+                micBtn.classList.remove('listening');
+            };
+        }
+
+        function toggleListening() {
+            if (!recognition) return;
+
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+                micBtn.classList.remove('listening');
+            } else {
+                recognition.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
+                recognition.start();
+                isListening = true;
+                micBtn.classList.add('listening');
+            }
+        }
+
+        // ============ Speech Synthesis ============
+        function speak(text) {
+            if (!('speechSynthesis' in window)) return;
+
             speechSynthesis.cancel();
-
-            var pitch = pitches[currentLang][currentTrade];
-            var fu = followUps[currentLang];
-            var ui = uiText[currentLang];
-            var followUp = ui.followUpPrefix + ' ' + fu.slice(0, -1).join(', ') + ', ' + ui.followUpOr + ' ' + fu.slice(-1) + '?';
-
-            var utterance = new SpeechSynthesisUtterance(pitch + ' ' + followUp);
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
+            var utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
-
-            var btn = document.getElementById('speakBtn');
-            var btnText = document.getElementById('speakBtnText');
-            var controls = document.getElementById('controls');
-
-            controls.classList.add('speaking');
-            btnText.textContent = ui.speaking;
-            btn.disabled = true;
-
-            utterance.onend = resetButton;
-            utterance.onerror = resetButton;
-
+            utterance.rate = 1.0;
             speechSynthesis.speak(utterance);
         }
 
-        function stopSpeaking() {
-            speechSynthesis.cancel();
-            resetButton();
+        // ============ Input Handling ============
+        function handleInput(text) {
+            if (!text.trim()) return;
+
+            addMessage(text, true);
+            textInput.value = '';
+
+            var c = content[currentLang];
+            var trade = $('userTrade').value;
+            var business = $('userBusiness').value || (currentLang === 'es' ? 'tu negocio' : 'your business');
+            var response = '';
+
+            var lowerText = text.toLowerCase();
+
+            // Detect intent
+            if (lowerText.includes('pitch') || lowerText.includes('escuchar') || lowerText.includes('hear')) {
+                var pitch = c.pitches[trade];
+                response = c.responses.pitch.replace('{business}', business).replace('{pitch}', pitch);
+                setTimeout(function() { speak(pitch); }, 500);
+            } else if (lowerText.includes('invoice') || lowerText.includes('factura') || lowerText.includes('crear')) {
+                response = c.responses.invoice;
+                setTimeout(addInvoicePreview, 300);
+            } else if (lowerText.includes('what is') || lowerText.includes('qué es') || lowerText.includes('que es')) {
+                response = c.responses.whatIs;
+            } else if (lowerText.includes('pricing') || lowerText.includes('precio') || lowerText.includes('cost')) {
+                response = c.responses.pricing;
+            } else if (lowerText.includes('local ai') || lowerText.includes('ia local') || lowerText.includes('local-first')) {
+                response = c.responses.localAI;
+            } else {
+                response = c.responses.default;
+            }
+
+            setTimeout(function() {
+                addMessage(response, false);
+            }, 400);
         }
 
-        function resetButton() {
-            var btn = document.getElementById('speakBtn');
-            var btnText = document.getElementById('speakBtnText');
-            var controls = document.getElementById('controls');
-            var ui = uiText[currentLang];
-            controls.classList.remove('speaking');
-            btn.disabled = false;
-            btnText.textContent = ui.speakPitch;
+        function setMode(mode) {
+            currentMode = mode;
+
+            document.querySelectorAll('.mode-tab').forEach(function(tab) {
+                tab.classList.toggle('active', tab.dataset.mode === mode);
+            });
+
+            clearEl(chatArea);
+
+            var c = content[currentLang];
+            var name = $('userName').value;
+            var greeting;
+
+            if (mode === 'pitch') {
+                greeting = name ? c.greeting.replace('{name}', name) : c.greetingDefault;
+            } else if (mode === 'invoice') {
+                greeting = c.invoiceIntro;
+            } else {
+                greeting = c.qaIntro;
+            }
+
+            addMessage(greeting, false);
         }
 
-        // Event listeners
-        document.getElementById('speakBtn').addEventListener('click', speakPitch);
-        document.getElementById('stopBtn').addEventListener('click', stopSpeaking);
+        // ============ Event Listeners ============
+        langToggle.addEventListener('click', function() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            localStorage.setItem('mayalogic_lang', currentLang);
+            applyLanguage();
+            if (recognition) recognition.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
+            setMode(currentMode);
+        });
 
-        document.querySelectorAll('.trade-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                updatePitch(btn.dataset.trade);
+        document.querySelectorAll('.mode-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                setMode(tab.dataset.mode);
             });
         });
 
-        // Initialize
+        micBtn.addEventListener('click', toggleListening);
+
+        sendBtn.addEventListener('click', function() {
+            handleInput(textInput.value);
+        });
+
+        textInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleInput(textInput.value);
+        });
+
+        // ============ Initialize ============
         applyLanguage();
-        updatePitch('general');
+        initSpeechRecognition();
+        setMode('pitch');
     </script>
 </body>
 </html>
