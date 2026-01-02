@@ -37,15 +37,33 @@
             text-align: center;
             margin-bottom: 3rem;
         }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
         .back-link {
-            display: inline-block;
             color: var(--muted);
             text-decoration: none;
             font-size: 0.875rem;
-            margin-bottom: 1rem;
             transition: color 0.2s;
         }
         .back-link:hover {
+            color: var(--primary);
+        }
+        .lang-toggle {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            color: var(--muted);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-toggle:hover {
+            border-color: var(--primary);
             color: var(--primary);
         }
         h1 {
@@ -229,29 +247,32 @@
 <body>
     <div class="container">
         <header>
-            <a href="../" class="back-link">&larr; Back to MayaLogic</a>
+            <div class="header-top">
+                <a href="../" class="back-link" data-en="← Back to MayaLogic" data-es="← Volver a MayaLogic">← Back to MayaLogic</a>
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">🇺🇸 EN</button>
+            </div>
             <h1>PitchBot</h1>
-            <p class="subtitle">30-Second Elevator Pitch Demo</p>
+            <p class="subtitle" data-en="30-Second Elevator Pitch Demo" data-es="Demo de Pitch de 30 Segundos">30-Second Elevator Pitch Demo</p>
         </header>
 
         <div class="trades" role="tablist">
-            <button class="trade-btn active" data-trade="general" role="tab" aria-selected="true">General</button>
-            <button class="trade-btn" data-trade="plumber" role="tab" aria-selected="false">Plumber</button>
-            <button class="trade-btn" data-trade="electrician" role="tab" aria-selected="false">Electrician</button>
+            <button class="trade-btn active" data-trade="general" role="tab" aria-selected="true" data-en="General" data-es="General">General</button>
+            <button class="trade-btn" data-trade="plumber" role="tab" aria-selected="false" data-en="Plumber" data-es="Plomero">Plumber</button>
+            <button class="trade-btn" data-trade="electrician" role="tab" aria-selected="false" data-en="Electrician" data-es="Electricista">Electrician</button>
             <button class="trade-btn" data-trade="hvac" role="tab" aria-selected="false">HVAC</button>
         </div>
 
         <div class="pitch-card">
             <div class="pitch-header">
-                <span class="pitch-label">Elevator Pitch</span>
+                <span class="pitch-label" data-en="Elevator Pitch" data-es="Pitch de Elevador">Elevator Pitch</span>
                 <span class="word-badge" id="wordBadge">67 words</span>
             </div>
             <p class="pitch-text" id="pitchText"></p>
         </div>
 
         <div class="follow-ups">
-            <div class="follow-ups-label">Suggested Follow-ups</div>
-            <div class="follow-ups-text">"Want to hear more about invoicing, pricing, or scheduling?"</div>
+            <div class="follow-ups-label" data-en="Suggested Follow-ups" data-es="Seguimientos Sugeridos">Suggested Follow-ups</div>
+            <div class="follow-ups-text" id="followUpsText">"Want to hear more about invoicing, pricing, or scheduling?"</div>
         </div>
 
         <div class="controls" id="controls">
@@ -260,67 +281,123 @@
                     <path d="M11 5L6 9H2v6h4l5 4V5z"/>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
                 </svg>
-                <span id="speakBtnText">Speak Pitch</span>
+                <span id="speakBtnText" data-en="Speak Pitch" data-es="Reproducir Pitch">Speak Pitch</span>
             </button>
             <button class="btn btn-secondary" id="stopBtn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="6" y="4" width="4" height="16"/>
                     <rect x="14" y="4" width="4" height="16"/>
                 </svg>
-                Stop
+                <span data-en="Stop" data-es="Detener">Stop</span>
             </button>
         </div>
     </div>
 
     <footer>
-        <p>Built with <a href="../">MayaLogic</a> &mdash; Voice-first assistant for contractors</p>
+        <p><span data-en="Built with" data-es="Hecho con">Built with</span> <a href="../">MayaLogic</a> — <span data-en="Voice-first assistant for contractors" data-es="Asistente por voz para contratistas">Voice-first assistant for contractors</span></p>
     </footer>
 
     <script>
-        // Pitch content (PAS framework: Problem, Agitate, Solve)
+        // Bilingual pitch content
         const pitches = {
-            general: "Running a trade business means juggling estimates, invoices, and material costs. Every minute on paperwork is a minute you're not billing. MayaLogic handles it all by voice—and runs locally first, so your data stays private and costs stay low. Cloud AI kicks in only when needed. Just speak, and your hands stay on the job.",
-            plumber: "Tired of paperwork eating your evenings? Every hour on invoices is an hour you're not billing. MayaLogic handles estimates, invoices, and pricing by voice. It runs on local AI first—fast, private, no per-query fees. Cloud backup only when needed.",
-            electrician: "Losing time on NEC lookups and panel calculations? Those manual calculations slow every job. MayaLogic knows wire sizing, box fill, and code requirements—powered by local AI for instant answers. No cloud latency, no API costs. Just ask, hands-free.",
-            hvac: "Spending too long on load calculations and equipment sizing? Manual math eats into your service calls. MayaLogic handles BTU calculations, refrigerant charges, and invoicing by voice. Local AI runs first—fast and private. Cloud escalates only for complex tasks."
+            en: {
+                general: "Running a trade business means juggling estimates, invoices, and material costs. Every minute on paperwork is a minute you're not billing. MayaLogic handles it all by voice—and runs locally first, so your data stays private and costs stay low. Cloud AI kicks in only when needed. Just speak, and your hands stay on the job.",
+                plumber: "Tired of paperwork eating your evenings? Every hour on invoices is an hour you're not billing. MayaLogic handles estimates, invoices, and pricing by voice. It runs on local AI first—fast, private, no per-query fees. Cloud backup only when needed.",
+                electrician: "Losing time on NEC lookups and panel calculations? Those manual calculations slow every job. MayaLogic knows wire sizing, box fill, and code requirements—powered by local AI for instant answers. No cloud latency, no API costs. Just ask, hands-free.",
+                hvac: "Spending too long on load calculations and equipment sizing? Manual math eats into your service calls. MayaLogic handles BTU calculations, refrigerant charges, and invoicing by voice. Local AI runs first—fast and private. Cloud escalates only for complex tasks."
+            },
+            es: {
+                general: "Manejar un negocio de oficios significa hacer malabares con cotizaciones, facturas y costos de materiales. Cada minuto en papeleo es un minuto que no estás cobrando. MayaLogic maneja todo por voz—y corre localmente primero, así tus datos quedan privados y los costos bajos. La IA en la nube solo entra cuando es necesario. Solo habla, y tus manos siguen en el trabajo.",
+                plumber: "¿Cansado del papeleo comiéndose tus noches? Cada hora en facturas es una hora que no estás cobrando. MayaLogic maneja cotizaciones, facturas y precios por voz. Corre en IA local primero—rápido, privado, sin cargos por consulta. Respaldo en la nube solo cuando es necesario.",
+                electrician: "¿Perdiendo tiempo en búsquedas de NEC y cálculos de panel? Esos cálculos manuales atrasan cada trabajo. MayaLogic sabe calibre de cable, llenado de caja y requisitos de código—impulsado por IA local para respuestas instantáneas. Sin latencia de nube, sin costos de API. Solo pregunta, manos libres.",
+                hvac: "¿Pasando mucho tiempo en cálculos de carga y dimensionamiento de equipo? Las matemáticas manuales se comen tus llamadas de servicio. MayaLogic maneja cálculos de BTU, cargas de refrigerante y facturación por voz. La IA local corre primero—rápida y privada. La nube escala solo para tareas complejas."
+            }
         };
 
-        const followUps = ["invoicing", "pricing", "scheduling"];
+        const followUps = {
+            en: ["invoicing", "pricing", "scheduling"],
+            es: ["facturación", "precios", "programación"]
+        };
+
+        const uiText = {
+            en: {
+                words: "words",
+                speaking: "Speaking...",
+                speakPitch: "Speak Pitch",
+                followUpPrefix: "Want to hear more about",
+                followUpOr: "or"
+            },
+            es: {
+                words: "palabras",
+                speaking: "Reproduciendo...",
+                speakPitch: "Reproducir Pitch",
+                followUpPrefix: "¿Quieres escuchar más sobre",
+                followUpOr: "o"
+            }
+        };
+
         let currentTrade = "general";
+        let currentLang = localStorage.getItem('mayalogic_lang') || 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            localStorage.setItem('mayalogic_lang', currentLang);
+            applyLanguage();
+            updatePitch(currentTrade);
+        }
+
+        function applyLanguage() {
+            // Update all elements with data-en/data-es
+            document.querySelectorAll('[data-en]').forEach(function(el) {
+                el.textContent = currentLang === 'es' ? el.dataset.es : el.dataset.en;
+            });
+
+            // Update toggle button
+            document.getElementById('langToggle').textContent = currentLang === 'es' ? '🇲🇽 ES' : '🇺🇸 EN';
+            document.documentElement.lang = currentLang;
+
+            // Update follow-ups text
+            var fu = followUps[currentLang];
+            var ui = uiText[currentLang];
+            document.getElementById('followUpsText').textContent = '"' + ui.followUpPrefix + ' ' + fu.slice(0, -1).join(', ') + ', ' + ui.followUpOr + ' ' + fu.slice(-1) + '?"';
+        }
 
         function updatePitch(trade) {
             currentTrade = trade;
-            const pitch = pitches[trade];
-            const words = pitch.split(/\s+/).length;
+            var pitch = pitches[currentLang][trade];
+            var words = pitch.split(/\s+/).length;
+            var ui = uiText[currentLang];
 
             document.getElementById('pitchText').textContent = pitch;
-            document.getElementById('wordBadge').textContent = words + ' words';
+            document.getElementById('wordBadge').textContent = words + ' ' + ui.words;
 
             // Update active button
             document.querySelectorAll('.trade-btn').forEach(function(btn) {
-                const isActive = btn.dataset.trade === trade;
+                var isActive = btn.dataset.trade === trade;
                 btn.classList.toggle('active', isActive);
                 btn.setAttribute('aria-selected', isActive);
             });
         }
 
         function speakPitch() {
-            // Stop any current speech
             speechSynthesis.cancel();
 
-            const pitch = pitches[currentTrade];
-            const followUp = 'Want to hear more about ' + followUps.slice(0, -1).join(', ') + ', or ' + followUps.slice(-1) + '?';
+            var pitch = pitches[currentLang][currentTrade];
+            var fu = followUps[currentLang];
+            var ui = uiText[currentLang];
+            var followUp = ui.followUpPrefix + ' ' + fu.slice(0, -1).join(', ') + ', ' + ui.followUpOr + ' ' + fu.slice(-1) + '?';
 
-            const utterance = new SpeechSynthesisUtterance(pitch + ' ' + followUp);
+            var utterance = new SpeechSynthesisUtterance(pitch + ' ' + followUp);
             utterance.rate = 1.0;
             utterance.pitch = 1.0;
+            utterance.lang = currentLang === 'es' ? 'es-MX' : 'en-US';
 
-            const btn = document.getElementById('speakBtn');
-            const btnText = document.getElementById('speakBtnText');
-            const controls = document.getElementById('controls');
+            var btn = document.getElementById('speakBtn');
+            var btnText = document.getElementById('speakBtnText');
+            var controls = document.getElementById('controls');
 
             controls.classList.add('speaking');
-            btnText.textContent = 'Speaking...';
+            btnText.textContent = ui.speaking;
             btn.disabled = true;
 
             utterance.onend = resetButton;
@@ -338,9 +415,10 @@
             var btn = document.getElementById('speakBtn');
             var btnText = document.getElementById('speakBtnText');
             var controls = document.getElementById('controls');
+            var ui = uiText[currentLang];
             controls.classList.remove('speaking');
             btn.disabled = false;
-            btnText.textContent = 'Speak Pitch';
+            btnText.textContent = ui.speakPitch;
         }
 
         // Event listeners
@@ -353,7 +431,8 @@
             });
         });
 
-        // Load initial pitch
+        // Initialize
+        applyLanguage();
         updatePitch('general');
     </script>
 </body>
