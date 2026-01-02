@@ -668,15 +668,27 @@
             recognition.onerror = function(event) {
                 isListening = false;
                 micBtn.classList.remove('listening');
-                // Show error to user
-                var errorMsg = currentLang === 'es'
-                    ? 'Error de micrófono. Verifica permisos.'
-                    : 'Microphone error. Check permissions.';
-                if (event.error === 'not-allowed') {
-                    errorMsg = currentLang === 'es'
-                        ? 'Micrófono bloqueado. Permite acceso en tu navegador.'
-                        : 'Microphone blocked. Allow access in your browser.';
-                }
+                // Show specific error to user
+                var errors = {
+                    'not-allowed': currentLang === 'es'
+                        ? 'Micrófono bloqueado. Click el candado en la barra de direcciones → Permitir micrófono.'
+                        : 'Mic blocked. Click the lock icon in address bar → Allow microphone.',
+                    'service-not-allowed': currentLang === 'es'
+                        ? 'Reconocimiento de voz no permitido. Usa Chrome o Edge.'
+                        : 'Speech recognition not allowed. Use Chrome or Edge.',
+                    'no-speech': currentLang === 'es'
+                        ? 'No escuché nada. Intenta de nuevo.'
+                        : 'No speech detected. Try again.',
+                    'audio-capture': currentLang === 'es'
+                        ? 'No se encontró micrófono. Conecta uno e intenta de nuevo.'
+                        : 'No microphone found. Connect one and try again.',
+                    'network': currentLang === 'es'
+                        ? 'Error de red. Verifica tu conexión.'
+                        : 'Network error. Check your connection.'
+                };
+                var errorMsg = errors[event.error] || (currentLang === 'es'
+                    ? 'Error: ' + event.error
+                    : 'Error: ' + event.error);
                 addMessage(errorMsg, false);
             };
         }
